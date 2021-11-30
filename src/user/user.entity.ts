@@ -1,10 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import * as bcrypt from "bcrypt";
-import IUser from "../interfaces/user.interface";
+import IUser from "./user.interface";
 
 @Entity()
 export class User implements IUser {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("uuid")
   id: number;
 
   @Column({ nullable: false })
@@ -13,7 +13,11 @@ export class User implements IUser {
   @Column({ nullable: false })
   email: string;
 
+  @Column({ nullable: false })
   password: string;
+
+  @Column({ nullable: false })
+  created_at: Date;
 
   hashPassword(): void {
     this.password = bcrypt.hashSync(this.password, 10);
