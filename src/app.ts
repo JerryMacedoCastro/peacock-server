@@ -3,16 +3,17 @@ import * as bodyParser from "body-parser";
 import express from "express";
 import Controller from "./interfaces/controller.interface";
 import errorMiddleware from "./middleware/error.middleware";
+import routes from "./routes";
 
 class App {
   public app: express.Application;
 
-  constructor(controllers: Controller[]) {
+  constructor() {
     this.app = express();
 
     this.initializeMiddlewares();
     this.initializeErrorHandling();
-    this.initializeControllers(controllers);
+    this.initializeRouter();
   }
 
   public listen(): void {
@@ -34,6 +35,10 @@ class App {
     controllers.forEach((controller) => {
       this.app.use("/", controller.router);
     });
+  }
+
+  private initializeRouter() {
+    this.app.use(routes);
   }
 }
 

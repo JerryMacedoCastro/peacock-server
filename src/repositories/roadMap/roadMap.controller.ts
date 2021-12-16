@@ -17,8 +17,7 @@ import NoRoadMapException from "../../exceptions/NoRoadMapException";
 @EntityRepository(RoadMap)
 export class RoadMapController
   extends Repository<RoadMap>
-  implements IController
-{
+  implements IController {
   public path = "/roadMap";
   public router = Router();
   private roadMap = getRepository(RoadMap);
@@ -30,38 +29,10 @@ export class RoadMapController
   }
 
   private initializeRoutes() {
-    this.router.get(
-      this.path,
-      // {} as RequestHandler,
-      this.getAllRoadMaps
-    );
 
-    this.router.post(
-      this.path,
-      // {} as RequestHandler,
-      this.postRoadMap
-    );
-
-    this.router.put(
-      this.path,
-      // {} as RequestHandler,
-      this.putRoadMap
-    );
-
-    this.router.delete(
-      this.path,
-      // {} as RequestHandler,
-      this.deleteRoadMap
-    );
-
-    this.router.get(
-      `${this.path}/byId`,
-      // {} as RequestHandler,
-      this.getRoadMapById
-    );
   }
 
-  private getAllRoadMaps = async (
+  public getAllRoadMaps = async (
     _request: Request,
     response: Response,
     next: NextFunction
@@ -79,7 +50,7 @@ export class RoadMapController
     else next(new NoRoadMapException());
   };
 
-  private postRoadMap = async (
+  public postRoadMap = async (
     _request: Request,
     response: Response,
     next: NextFunction
@@ -105,7 +76,7 @@ export class RoadMapController
     response.send(result);
   };
 
-  private putRoadMap = async (
+  public putRoadMap = async (
     _request: Request,
     response: Response,
     next: NextFunction
@@ -131,7 +102,7 @@ export class RoadMapController
     response.send(result);
   };
 
-  private deleteRoadMap = async (
+  public deleteRoadMap = async (
     _request: Request,
     response: Response,
     next: NextFunction
@@ -143,7 +114,7 @@ export class RoadMapController
     response.send(result);
   };
 
-  private getRoadMapById = async (
+  public getRoadMapById = async (
     _request: Request,
     response: Response,
     next: NextFunction

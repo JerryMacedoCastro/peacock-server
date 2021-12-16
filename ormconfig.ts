@@ -2,12 +2,18 @@ import { ConnectionOptions } from 'typeorm';
 
 const config: ConnectionOptions = {
     type: "postgres",
+    url: "postgres://bitltkeffygbcj:e13e1029bcfd985ea090cbf9a11e23204e22fc4759581ba5481edf16f847e781@ec2-54-147-207-184.compute-1.amazonaws.com:5432/d6uaskscevvcem",
     host: "ec2-54-147-207-184.compute-1.amazonaws.com",
     port: 5432,
     username: "bitltkeffygbcj",
     password: "e13e1029bcfd985ea090cbf9a11e23204e22fc4759581ba5481edf16f847e781",
     database: "d6uaskscevvcem",
     entities: [`${__dirname}/../**/*.entity{.ts,.js}`],
+    migrations: ["./src/database/migrations/**.ts"],
+    cli: {
+        migrationsDir: "./src/database/migrations",
+    },
+    subscribers: ["src/subscriber/**/*.ts"],
     synchronize: true,
     // dropSchema: true,
     extra: {
@@ -16,7 +22,6 @@ const config: ConnectionOptions = {
             rejectUnauthorized: false
         }
     },
-    url: "postgres://bitltkeffygbcj:e13e1029bcfd985ea090cbf9a11e23204e22fc4759581ba5481edf16f847e781@ec2-54-147-207-184.compute-1.amazonaws.com:5432/d6uaskscevvcem"
 };
 
 // const config: ConnectionOptions = {

@@ -7,7 +7,7 @@ import {
 } from 'express';
 import { EntityRepository, Repository, getRepository } from "typeorm";
 import Teacher from "./teacher.entity";
-import IController from "../../interface/controller.interface";
+import IController from '../../interfaces/controller.interface';
 import NoTeachersException from '../../exceptions/NoTeachersException';
 
 @EntityRepository(Teacher)
@@ -23,38 +23,10 @@ export class TeacherController extends Repository<Teacher> implements IControlle
     }
 
     private initializeRoutes() {
-        this.router.get(
-            this.path,
-            // {} as RequestHandler,
-            this.getAllTeachers,
-        );
 
-        this.router.post(
-            this.path,
-            // {} as RequestHandler,
-            this.postTeacher,
-        );
-
-        this.router.put(
-            this.path,
-            // {} as RequestHandler,
-            this.putTeacher,
-        );
-
-        this.router.delete(
-            this.path,
-            // {} as RequestHandler,
-            this.deleteTeacher,
-        );
-
-        this.router.get(
-            `${this.path}/byName`,
-            // {} as RequestHandler,
-            this.getTeacherByName,
-        );
     }
 
-    private getAllTeachers = async (
+    public getAllTeachers = async (
         _request: Request,
         response: Response,
         next: NextFunction,
@@ -64,7 +36,7 @@ export class TeacherController extends Repository<Teacher> implements IControlle
         else next(new NoTeachersException());
     };
 
-    private postTeacher = async (
+    public postTeacher = async (
         _request: Request,
         response: Response,
         next: NextFunction,
@@ -77,7 +49,7 @@ export class TeacherController extends Repository<Teacher> implements IControlle
 
     };
 
-    private putTeacher = async (
+    public putTeacher = async (
         _request: Request,
         response: Response,
         next: NextFunction,
@@ -90,7 +62,7 @@ export class TeacherController extends Repository<Teacher> implements IControlle
 
     };
 
-    private deleteTeacher = async (
+    public deleteTeacher = async (
         _request: Request,
         response: Response,
         next: NextFunction,
@@ -103,7 +75,7 @@ export class TeacherController extends Repository<Teacher> implements IControlle
 
     };
 
-    private getTeacherByName = async (
+    public getTeacherByName = async (
         _request: Request,
         response: Response,
         next: NextFunction,

@@ -7,7 +7,10 @@
   "author": "Jerry Macedo Castro <leom551@hotmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev --ignore-watch node_modules src/index.ts"
+    "dev": "ts-node-dev --ignore-watch node_modules src/index.ts",
+    "build": "tsc",
+    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
+    "start": "node dist/server.js"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",

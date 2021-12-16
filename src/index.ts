@@ -14,11 +14,7 @@ import { RoadMapController } from "./repositories/roadMap/roadMap.controller";
     console.log("Error while connecting to the database");
     console.log(error);
   }
-  const app = new App([
-    new TeacherController(),
-    new ClassController(),
-    new RoadMapController(),
-  ]);
+  const app = new App();
 
   app.listen();
 })();

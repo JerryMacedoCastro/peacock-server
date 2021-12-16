@@ -17,35 +17,7 @@ export class ClassController extends Repository<Class> implements IController {
   }
 
   private initializeRoutes() {
-    this.router.get(
-      this.path,
-      // {} as RequestHandler,
-      this.getAllClasses
-    );
 
-    this.router.post(
-      this.path,
-      // {} as RequestHandler,
-      this.postClass
-    );
-
-    this.router.put(
-      this.path,
-      // {} as RequestHandler,
-      this.putClass
-    );
-
-    this.router.delete(
-      this.path,
-      // {} as RequestHandler,
-      this.deleteClass
-    );
-
-    this.router.get(
-      `${this.path}/byName`,
-      // {} as RequestHandler,
-      this.getAllClassByUser
-    );
   }
 
   public getAllClasses = async (
@@ -58,13 +30,13 @@ export class ClassController extends Repository<Class> implements IController {
       // where: { teacher: { id: 1 } }
     });
 
-    console.log(_class);
+    console.log("entrou no get");
 
     if (_class) response.send(_class);
     else next(new NoClassException());
   };
 
-  private postClass = async (
+  public postClass = async (
     _request: Request,
     response: Response,
     next: NextFunction
@@ -76,7 +48,7 @@ export class ClassController extends Repository<Class> implements IController {
     response.send(result);
   };
 
-  private putClass = async (
+  public putClass = async (
     _request: Request,
     response: Response,
     next: NextFunction
@@ -88,7 +60,7 @@ export class ClassController extends Repository<Class> implements IController {
     response.send(result);
   };
 
-  private deleteClass = async (
+  public deleteClass = async (
     _request: Request,
     response: Response,
     next: NextFunction
@@ -100,7 +72,7 @@ export class ClassController extends Repository<Class> implements IController {
     response.send(result);
   };
 
-  private getAllClassByUser = async (
+  public getAllClassByUser = async (
     _request: Request,
     response: Response,
     next: NextFunction
@@ -115,7 +87,7 @@ export class ClassController extends Repository<Class> implements IController {
     else next(new NoClassException());
   };
 
-  private findByName(name: string) {
+  public findByName(name: string) {
     return this.class
       .createQueryBuilder("class")
       .where("class.name = :name", { name })
