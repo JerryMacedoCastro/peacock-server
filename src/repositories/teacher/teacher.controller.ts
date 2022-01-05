@@ -5,16 +5,17 @@ import {
     NextFunction,
     RequestHandler,
 } from 'express';
-import { EntityRepository, Repository, getRepository } from "typeorm";
+import { EntityRepository, Repository, getRepository, createConnection } from "typeorm";
 import Teacher from "./teacher.entity";
 import IController from '../../interfaces/controller.interface';
 import NoTeachersException from '../../exceptions/NoTeachersException';
+import config from '../../../ormconfig';
 
 @EntityRepository(Teacher)
 export class TeacherController extends Repository<Teacher> implements IController {
     public path = '/teacher';
     public router = Router();
-    private teacher = getRepository(Teacher);
+    private static teacher: Repository<Teacher>;
 
     constructor() {
         super();
@@ -22,8 +23,9 @@ export class TeacherController extends Repository<Teacher> implements IControlle
         this.initializeRoutes();
     }
 
-    private initializeRoutes() {
-
+    private async initializeRoutes() {
+        await createConnection(config);
+        TeacherController.teacher = getRepository(Teacher);
     }
 
     public getAllTeachers = async (
@@ -31,7 +33,7 @@ export class TeacherController extends Repository<Teacher> implements IControlle
         response: Response,
         next: NextFunction,
     ) => {
-        const teachers = await this.teacher.find();
+        const teachers = await TeacherController.teacher.find();
         if (teachers) response.send(teachers);
         else next(new NoTeachersException());
     };
@@ -43,7 +45,7 @@ export class TeacherController extends Repository<Teacher> implements IControlle
     ) => {
         const teacher: Teacher = _request.body.teacher;
 
-        const result = await this.teacher.save(teacher);
+        const result = await TeacherController.teacher.save(teacher);
 
         response.send(result);
 
@@ -56,7 +58,7 @@ export class TeacherController extends Repository<Teacher> implements IControlle
     ) => {
         const teacher: Teacher = _request.body.teacher;
 
-        const result = await this.teacher.save(teacher);
+        const result = await TeacherController.teacher.save(teacher);
 
         response.send(result);
 
@@ -69,7 +71,7 @@ export class TeacherController extends Repository<Teacher> implements IControlle
     ) => {
         const teacher: Teacher = _request.body.teacher;
 
-        const result = await this.teacher.remove(teacher);
+        const result = await TeacherController.teacher.remove(teacher);
 
         response.send(result);
 
@@ -92,7 +94,7 @@ export class TeacherController extends Repository<Teacher> implements IControlle
     };
 
     findByName(name: string) {
-        return this.teacher.createQueryBuilder("teacher")
+        return TeacherController.teacher.createQueryBuilder("teacher")
             .where("teacher.name = :name", { name })
             .getOne();
     }

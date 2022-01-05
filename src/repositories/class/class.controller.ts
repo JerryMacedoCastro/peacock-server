@@ -1,14 +1,16 @@
 import { Request, Response, Router, NextFunction } from "express";
-import { EntityRepository, Repository, getRepository } from "typeorm";
+import { EntityRepository, Repository, getRepository, getConnection, getConnectionManager, createConnection } from "typeorm";
 import Class from "./class.entity";
 import IController from "../../interfaces/controller.interface";
 import NoClassException from "../../exceptions/NoClassException";
+import config from "../../../ormconfig";
+import App from "../../app";
 
 @EntityRepository(Class)
 export class ClassController extends Repository<Class> implements IController {
   public path = "/class";
   public router = Router();
-  private class = getRepository(Class);
+  public static class: Repository<Class>;
 
   constructor() {
     super();
@@ -16,8 +18,10 @@ export class ClassController extends Repository<Class> implements IController {
     this.initializeRoutes();
   }
 
-  private initializeRoutes() {
-
+  private async initializeRoutes() {
+    await createConnection(config);
+    const manager = getConnectionManager().get();
+    ClassController.class = manager.getRepository(Class);
   }
 
   public getAllClasses = async (
@@ -25,7 +29,7 @@ export class ClassController extends Repository<Class> implements IController {
     response: Response,
     next: NextFunction
   ) => {
-    const _class = await this.class.find({
+    const _class = await ClassController.class.find({
       relations: ["teacher"],
       // where: { teacher: { id: 1 } }
     });
@@ -43,7 +47,7 @@ export class ClassController extends Repository<Class> implements IController {
   ) => {
     const _class: Class = _request.body.class;
 
-    const result = await this.class.save(_class);
+    const result = await ClassController.class.save(_class);
 
     response.send(result);
   };
@@ -55,7 +59,7 @@ export class ClassController extends Repository<Class> implements IController {
   ) => {
     const _class: Class = _request.body.class;
 
-    const result = await this.class.save(_class);
+    const result = await ClassController.class.save(_class);
 
     response.send(result);
   };
@@ -67,7 +71,7 @@ export class ClassController extends Repository<Class> implements IController {
   ) => {
     const _class: Class = _request.body.class;
 
-    const result = await this.class.remove(_class);
+    const result = await ClassController.class.remove(_class);
 
     response.send(result);
   };
@@ -88,7 +92,7 @@ export class ClassController extends Repository<Class> implements IController {
   };
 
   public findByName(name: string) {
-    return this.class
+    return ClassController.class
       .createQueryBuilder("class")
       .where("class.name = :name", { name })
       .getOne();

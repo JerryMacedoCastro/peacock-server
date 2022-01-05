@@ -5,7 +5,7 @@ import {
   NextFunction,
   RequestHandler,
 } from "express";
-import { EntityRepository, Repository, getRepository } from "typeorm";
+import { EntityRepository, Repository, getRepository, createConnection, Connection } from "typeorm";
 import RoadMap from "./roadMap.entity";
 import TeachingPlatform from "../teachingPlatform/teachingPlatform.entity";
 import TeachingStage from "../teachingStage/teachingStage.entity";
@@ -13,6 +13,7 @@ import TeachingStrategy from "../teachingStrategy/teachingStrategy.entity";
 import Tools from "../tools/tools.entity";
 import IController from "../../interfaces/controller.interface";
 import NoRoadMapException from "../../exceptions/NoRoadMapException";
+import config from "../../../ormconfig";
 
 @EntityRepository(RoadMap)
 export class RoadMapController
@@ -20,7 +21,7 @@ export class RoadMapController
   implements IController {
   public path = "/roadMap";
   public router = Router();
-  private roadMap = getRepository(RoadMap);
+  public static roadMap: Repository<RoadMap>;
 
   constructor() {
     super();
@@ -28,8 +29,9 @@ export class RoadMapController
     this.initializeRoutes();
   }
 
-  private initializeRoutes() {
-
+  private async initializeRoutes() {
+    await createConnection(config);
+    RoadMapController.roadMap = getRepository(RoadMap);
   }
 
   public getAllRoadMaps = async (
@@ -37,7 +39,7 @@ export class RoadMapController
     response: Response,
     next: NextFunction
   ) => {
-    const roadMap = await this.roadMap.find({
+    const roadMap = await RoadMapController.roadMap.find({
       relations: [
         "teachingPlatform",
         "teachingStage",
@@ -71,7 +73,7 @@ export class RoadMapController
     );
     roadMap.tools = await repTools.save(roadMap.tools);
 
-    const result = await this.roadMap.save(roadMap);
+    const result = await RoadMapController.roadMap.save(roadMap);
 
     response.send(result);
   };
@@ -97,7 +99,7 @@ export class RoadMapController
     );
     roadMap.tools = await repTools.save(roadMap.tools);
 
-    const result = await this.roadMap.save(roadMap);
+    const result = await RoadMapController.roadMap.save(roadMap);
 
     response.send(result);
   };
@@ -109,7 +111,7 @@ export class RoadMapController
   ) => {
     const roadMap: RoadMap = _request.body.roadMap;
 
-    const result = await this.roadMap.remove(roadMap);
+    const result = await RoadMapController.roadMap.remove(roadMap);
 
     response.send(result);
   };
@@ -129,7 +131,7 @@ export class RoadMapController
   };
 
   findByIdTeacher(id: bigint) {
-    return this.roadMap
+    return RoadMapController.roadMap
       .createQueryBuilder("roadMap")
       .where("roadMap.teacher = :id", { id })
       .getOne();

@@ -1,6 +1,7 @@
 import * as bodyParser from "body-parser";
 // import cookieParser from 'cookie-parser';
 import express from "express";
+import { Connection } from "typeorm";
 import Controller from "./interfaces/controller.interface";
 import errorMiddleware from "./middleware/error.middleware";
 import routes from "./routes";
@@ -8,12 +9,12 @@ import routes from "./routes";
 class App {
   public app: express.Application;
 
-  constructor() {
+  constructor(manager: Connection) {
     this.app = express();
 
     this.initializeMiddlewares();
     this.initializeErrorHandling();
-    this.initializeRouter();
+    this.initializeRouter(manager);
   }
 
   public listen(): void {
@@ -37,8 +38,8 @@ class App {
     });
   }
 
-  private initializeRouter() {
-    this.app.use(routes);
+  private initializeRouter(manager: Connection) {
+    this.app.use("/", routes);
   }
 }
 
