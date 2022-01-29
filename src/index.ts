@@ -1,18 +1,23 @@
-import express from "express";
 import { createConnection } from "typeorm";
 import config from "../ormconfig";
-const app = express();
+import App from "./app";
 
-app.use(express.json());
+import { TeacherController } from "./repositories/teacher/teacher.controller";
+import { ClassController } from "./repositories/class/class.controller";
+import { RoadMapController } from "./repositories/roadMap/roadMap.controller";
 
-app.listen(3333, async () => {
+(async () => {
   try {
     await createConnection(config);
-    console.log("Connected to database");
   } catch (error) {
-    console.log("Error connecting to database");
+    console.log("Error while connecting to the database");
     console.log(error);
   }
+  const app = new App([
+    new TeacherController(),
+    new ClassController(),
+    new RoadMapController(),
+  ]);
 
-  console.log("🚀 Server started on port 3333!");
-});
+  app.listen();
+})();
