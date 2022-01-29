@@ -21,6 +21,8 @@
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-promise": "4.2.1",
     "express": "^4.17.1",
-    "ts-node-dev": "^1.1.8"
+    "pg": "^8.7.1",
+    "ts-node-dev": "^1.1.8",
+    "typeorm": "^0.2.38"
   }
 }
