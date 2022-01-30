@@ -1,11 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+} from "typeorm";
 import * as bcrypt from "bcrypt";
 import IUser from "./user.interface";
+import { v4 as uuid } from "uuid";
 
 @Entity()
 export class User implements IUser {
   @PrimaryGeneratedColumn("uuid")
-  id: number;
+  id: string;
 
   @Column({ nullable: false })
   name: string;
@@ -16,7 +22,7 @@ export class User implements IUser {
   @Column({ nullable: false })
   password: string;
 
-  @Column({ nullable: false })
+  @CreateDateColumn({ nullable: false })
   created_at: Date;
 
   hashPassword(): void {

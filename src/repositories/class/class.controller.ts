@@ -14,7 +14,7 @@ export default class ClassController {
       if (!classRepository) throw new NoClassException();
 
       const classes = await classRepository.find();
-      console.log(classes);
+
       return response.status(200).send(classes);
     } catch (error) {
       return response.status(400).send(error);
@@ -27,6 +27,8 @@ export default class ClassController {
   ): Promise<Response> => {
     try {
       const { name, educationLevel, teacherId, schoolYear } = request.body;
+
+      console.log(name, educationLevel, teacherId, schoolYear);
 
       const classRepository = getRepository(Class);
       if (!classRepository) throw new NoClassException();

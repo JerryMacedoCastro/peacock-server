@@ -21,11 +21,7 @@ export default class TeacherController {
     }
   }
 
-  async createTeacher(
-    request: Request,
-    response: Response,
-    next: NextFunction
-  ): Promise<Response> {
+  async createTeacher(request: Request, response: Response): Promise<Response> {
     try {
       const {
         name,

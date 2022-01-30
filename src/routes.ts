@@ -1,6 +1,7 @@
 import { Router } from "express";
-import classRoutes from "./repositories/class/class.route";
-import teacherRoutes from "./repositories/teacher/teacher.route";
+import classRoutes from "./repositories/class/class.routes";
+import teacherRoutes from "./repositories/teacher/teacher.routes";
+import userRoutes from "./repositories/user/user.routes";
 
 const routes = Router();
 
@@ -10,5 +11,6 @@ routes.get("/", (_req, res) => {
 
 routes.use("/class", classRoutes);
 routes.use("/teacher", teacherRoutes);
+routes.use("/user", userRoutes);
 
 export default routes;
