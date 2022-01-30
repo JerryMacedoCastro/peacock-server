@@ -8,8 +8,7 @@ import routes from "./routes";
 
 const start = async () => {
   try {
-    console.log("----------------------------------------");
-    console.log(__dirname);
+    console.log("Starting server...");
     await createConnection(config);
     console.log("Database connected");
 
@@ -19,7 +18,7 @@ const start = async () => {
     app.use(express.json());
     app.use("/v1", routes);
 
-    app.listen(3333, () => {
+    app.listen(process.env.PORT || 3333, () => {
       console.log("Listening on port 3333");
     });
   } catch (error) {
