@@ -1,29 +1,24 @@
-import {
-  Column,
-  Entity,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  JoinColumn,
-} from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 import Teacher from "../teacher/teacher.entity";
 
 @Entity({ name: "class" })
 class Class {
   @PrimaryGeneratedColumn()
-  public id!: bigint;
+  id: bigint;
 
   @Column()
-  public name!: string;
+  name: string;
 
   @Column()
-  public educationLevel!: string;
+  educationLevel!: string;
 
-  @OneToOne(() => Teacher, (teacher: Teacher) => teacher.id)
-  @JoinColumn({ name: "teacher" })
-  public teacher!: Teacher;
+  @ManyToOne(() => Teacher, (teacher) => teacher.classes, {
+    nullable: false,
+  })
+  teacher: Teacher;
 
   @Column()
-  public schoolYear!: string;
+  schoolYear!: string;
 }
 
 export default Class;
