@@ -1,124 +1,61 @@
-import { Request, Response, Router, NextFunction } from "express";
-import { EntityRepository, Repository, getRepository } from "typeorm";
+import { Request, Response } from "express";
+import { getRepository } from "typeorm";
 import Class from "./class.entity";
-import IController from "../../interfaces/controller.interface";
+import Teacher from "../teacher/teacher.entity";
 import NoClassException from "../../exceptions/NoClassException";
 
-@EntityRepository(Class)
-export class ClassController extends Repository<Class> implements IController {
-  public path = "/class";
-  public router = Router();
-  private class = getRepository(Class);
+export default class ClassController {
+  async getAllClasses(
+    _request: Request,
+    response: Response
+  ): Promise<Response> {
+    try {
+      const classRepository = getRepository(Class);
+      if (!classRepository) throw new NoClassException();
 
-  constructor() {
-    super();
+      const classes = await classRepository.find();
 
-    this.initializeRoutes();
+      return response.status(200).send(classes);
+    } catch (error) {
+      return response.status(400).send(error);
+    }
   }
 
-  private initializeRoutes() {
-    this.router.get(
-      this.path,
-      // {} as RequestHandler,
-      this.getAllClasses
-    );
+  createClass = async (
+    request: Request,
+    response: Response
+  ): Promise<Response> => {
+    try {
+      const { name, educationLevel, teacherId, schoolYear } = request.body;
 
-    this.router.post(
-      this.path,
-      // {} as RequestHandler,
-      this.postClass
-    );
+      console.log(name, educationLevel, teacherId, schoolYear);
 
-    this.router.put(
-      this.path,
-      // {} as RequestHandler,
-      this.putClass
-    );
+      const classRepository = getRepository(Class);
+      if (!classRepository) throw new NoClassException();
 
-    this.router.delete(
-      this.path,
-      // {} as RequestHandler,
-      this.deleteClass
-    );
+      const teacherRepository = getRepository(Teacher);
 
-    this.router.get(
-      `${this.path}/byName`,
-      // {} as RequestHandler,
-      this.getAllClassByUser
-    );
-  }
+      const isClassExist = await classRepository.findOne({ name: name });
 
-  public getAllClasses = async (
-    _request: Request,
-    response: Response,
-    next: NextFunction
-  ) => {
-    const _class = await this.class.find({
-      relations: ["teacher"],
-      // where: { teacher: { id: 1 } }
-    });
+      if (isClassExist) {
+        return response.status(400).send("Class already exist");
+      }
 
-    console.log(_class);
+      const teacher = await teacherRepository.findOne({ id: teacherId });
+      if (!teacher) throw new Error("Teacher not found");
 
-    if (_class) response.send(_class);
-    else next(new NoClassException());
+      const newClass = classRepository.create({
+        name,
+        educationLevel,
+        teacher: teacher,
+        schoolYear,
+      });
+
+      const result = await classRepository.save(newClass);
+
+      return response.status(201).send(result);
+    } catch (error) {
+      return response.send(error);
+    }
   };
-
-  private postClass = async (
-    _request: Request,
-    response: Response,
-    next: NextFunction
-  ) => {
-    const _class: Class = _request.body.class;
-
-    const result = await this.class.save(_class);
-
-    response.send(result);
-  };
-
-  private putClass = async (
-    _request: Request,
-    response: Response,
-    next: NextFunction
-  ) => {
-    const _class: Class = _request.body.class;
-
-    const result = await this.class.save(_class);
-
-    response.send(result);
-  };
-
-  private deleteClass = async (
-    _request: Request,
-    response: Response,
-    next: NextFunction
-  ) => {
-    const _class: Class = _request.body.class;
-
-    const result = await this.class.remove(_class);
-
-    response.send(result);
-  };
-
-  private getAllClassByUser = async (
-    _request: Request,
-    response: Response,
-    next: NextFunction
-  ) => {
-    const { query } = _request;
-    const nome = query.nome as string;
-    console.log(nome);
-
-    const _class = await this.findByName(nome);
-
-    if (_class) response.send(_class);
-    else next(new NoClassException());
-  };
-
-  private findByName(name: string) {
-    return this.class
-      .createQueryBuilder("class")
-      .where("class.name = :name", { name })
-      .getOne();
-  }
 }

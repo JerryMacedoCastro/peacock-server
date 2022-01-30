@@ -1,36 +1,41 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import Class from "../class/class.entity";
+import ITeacher from "./teacher.interface";
 
-@Entity({ name: "teacher" })
-class Teacher {
-    @PrimaryGeneratedColumn()
-    public id!: bigint;
+@Entity()
+class Teacher implements ITeacher {
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
-    @Column()
-    public name!: string;
+  @Column()
+  name: string;
 
-    @Column()
-    public email!: string;
+  @Column()
+  email: string;
 
-    @Column()
-    public genre!: string;
+  @Column()
+  genre: string;
 
-    @Column()
-    public birthDate!: Date;
+  @Column()
+  birthDate: Date;
 
-    @Column()
-    public nationality!: string;
+  @Column()
+  nationality: string;
 
-    @Column()
-    public estate!: string;
+  @Column()
+  state: string;
 
-    @Column()
-    public city!: string;
+  @Column()
+  city: string;
 
-    @Column()
-    public teachingTime!: string;
+  @Column()
+  teachingTime: string;
 
-    @Column()
-    public academicEducation!: string;
+  @Column()
+  academicEducation: string;
+
+  @OneToMany(() => Class, (classRoom) => classRoom.teacher)
+  classes: Class[];
 }
 
 export default Teacher;
