@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { getRepository } from "typeorm";
 import Class from "./class.entity";
 import Teacher from "../teacher/teacher.entity";
@@ -58,4 +58,66 @@ export default class ClassController {
       return response.send(error);
     }
   };
+
+  putClass = async (
+    _request: Request,
+    response: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const classReq: Class = _request.body.class;
+      const classRepository = getRepository(Class);
+
+      const result = await classRepository.save(classReq);
+
+      return response.send(result);
+    } catch (error) {
+      return response.status(400).send(error);
+    }
+  };
+
+  deleteClass = async (
+    _request: Request,
+    response: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const classRepository = getRepository(Class);
+      if (!classRepository) throw new NoClassException();
+
+      const classReq: Class = _request.body.class;
+
+      const result = await classRepository.remove(classReq);
+
+      response.send(result);
+    } catch (error) {
+      return response.status(400).send(error);
+    }
+  };
+
+  getAllClassByUser = async (
+    _request: Request,
+    response: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { query } = _request;
+      const nome = query.nome as string;
+
+      const classReq = await this.findByName(nome);
+
+      if (classReq) response.send(classReq);
+      else next(new NoClassException());
+    } catch (error) {
+      return response.status(400).send(error);
+    }
+  };
+
+  findByName(name: string) {
+    const classRepository = getRepository(Class);
+    return classRepository
+      .createQueryBuilder("class")
+      .where("class.name = :name", { name })
+      .getOne();
+  }
 }

@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import ITools from './toolsinterface';
 
+@Entity()
 class Tools implements ITools {
     @PrimaryGeneratedColumn()
     public id!: bigint;

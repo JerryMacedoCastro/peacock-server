@@ -1,12 +1,14 @@
-import { Column, OneToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
+import { Column, OneToOne, PrimaryGeneratedColumn, JoinColumn, Entity } from 'typeorm';
 
 import TeachingPlatform from '../teachingPlatform/teachingPlatform.entity';
 import TeachingStage from '../teachingStage/teachingStage.entity';
 import TeachingStrategy from '../teachingStrategy/teachingStrategy.entity';
 import Tools from '../tools/tools.entity';
 import Teacher from '../teacher/teacher.entity';
+import IRoadMap from './roadMap.interface';
 
-class RoadMap {
+@Entity()
+class RoadMap implements IRoadMap {
     @PrimaryGeneratedColumn()
     public id!: bigint;
 

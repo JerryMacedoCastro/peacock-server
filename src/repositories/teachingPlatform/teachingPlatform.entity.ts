@@ -1,6 +1,7 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import ITeachingPlatform from './teachingPlatform.interface';
 
+@Entity()
 class TeachingPlatform implements ITeachingPlatform {
     @PrimaryGeneratedColumn()
     public id!: bigint;

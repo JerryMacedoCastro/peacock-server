@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 import Teacher from "../teacher/teacher.entity";
 import IClass from "./class.interface";
+
 @Entity()
 export class Class implements IClass {
   @PrimaryGeneratedColumn("uuid")

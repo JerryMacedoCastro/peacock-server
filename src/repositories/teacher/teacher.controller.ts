@@ -66,4 +66,73 @@ export default class TeacherController {
       return response.send(error);
     }
   }
-}
+
+  putTeacher = async (
+    _request: Request,
+    response: Response,
+    next: NextFunction,
+  ) => {
+
+    try {
+      const teacherRepository = getRepository(Teacher);
+      const teacher: Teacher = _request.body.teacher;
+
+      const result = await teacherRepository.save(teacher);
+
+      return response.send(result);
+
+    } catch (error) {
+      return response.status(400).send(error);
+    }
+
+
+  };
+
+  deleteTeacher = async (
+    _request: Request,
+    response: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const teacher: Teacher = _request.body.teacher;
+      const teacherRepository = getRepository(Teacher);
+
+      const result = await teacherRepository.remove(teacher);
+
+      return response.send(result);
+
+    } catch (error) {
+      return response.status(400).send(error);
+    }
+
+  };
+
+  getTeacherByName = async (
+    _request: Request,
+    response: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const { query } = _request;
+      const nome = query.nome as string;
+      console.log(nome);
+
+      const teacher = await this.findByName(nome);
+
+      if (teacher)
+        response.send(teacher);
+      else next(new NoTeachersException());
+
+    } catch (error) {
+      return response.status(400).send(error);
+    }
+  }
+
+  findByName(name: string) {
+    const teacherRepository = getRepository(Teacher);
+    return teacherRepository.createQueryBuilder("teacher")
+      .where("teacher.name = :name", { name })
+      .getOne();
+  }
+};
+

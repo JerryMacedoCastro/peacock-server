@@ -1,6 +1,7 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import ITeachingStage from './teachingStage.interface';
 
+@Entity()
 class TeachingStage implements ITeachingStage {
     @PrimaryGeneratedColumn()
     public id!: bigint;
